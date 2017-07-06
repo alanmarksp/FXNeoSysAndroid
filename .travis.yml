@@ -25,7 +25,7 @@ android:
     - tools
     - build-tools-26.0.0
     - android-26
-    - android-${API}
+    - ${API}
     - sys-img-{ABI}-${TAG}-${API}
 
 before_install:

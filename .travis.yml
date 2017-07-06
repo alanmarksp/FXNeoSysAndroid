@@ -1,0 +1,57 @@
+language: android
+jdk: oraclejdk8
+sudo: required
+dist: trusty
+
+env:
+  global:
+    - API=19
+    - TAG=google_apis
+    - ABI=armeabi-v7a
+    - QEMU_AUDIO_DRV=none
+    - ADB_INSTALL_TIMEOUT=20
+    - TOOLS=${ANDROID_HOME}/tools
+    - PATH=${ANDROID_HOME}:${ANDROID_HOME}/emulator:${TOOLS}:${TOOLS}/bin:${ANDROID_HOME}/platform-tools:${PATH}
+
+branches:
+  only:
+    - master
+    - develop
+
+android:
+  components:
+    - tools
+    - platform-tools
+    - tools
+    - build-tools-26.0.0
+    - android-26
+    - android-${API}
+    - sys-img-{ABI}-${TAG}-${API}
+
+before_install:
+  - export EMULATOR="system-images;android-${API};${TAG};${ABI}"
+  - echo 'count=0' > /home/travis/.android/repositories.cfg
+
+install:
+  - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2"
+  - echo yes | sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.2"
+  - echo yes | sdkmanager --update
+
+before_script:
+  - echo no | avdmanager create avd -f -n test -k "$EMULATOR" --abi "$ABI" --tag "$TAG"
+  - emulator -avd test -no-audio -no-window &
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
+
+script:
+  - ./gradlew build connectedCheck
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache

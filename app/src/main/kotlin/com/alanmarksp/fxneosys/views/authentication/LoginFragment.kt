@@ -1,104 +1,103 @@
 package com.alanmarksp.fxneosys.views.authentication
 
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import com.alanmarksp.fxneosys.R
+import com.alanmarksp.fxneosys.local.repositories.TokenRepository
+import com.alanmarksp.fxneosys.models.Authentication
+import com.alanmarksp.fxneosys.presenters.AuthenticatePresenter
+import com.alanmarksp.fxneosys.retrofit.repositories.AuthenticationRepository
+import com.alanmarksp.fxneosys.utils.Constants.ROUTES
+import com.alanmarksp.fxneosys.views.Router
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import retrofit2.HttpException
 
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [LoginFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [LoginFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+
 class LoginFragment : Fragment() {
 
-    // TODO: Rename and change types of parameters
-    private var mParam1: String? = null
-    private var mParam2: String? = null
-
-    private var mListener: OnFragmentInteractionListener? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            mParam1 = arguments.getString(ARG_PARAM1)
-            mParam2 = arguments.getString(ARG_PARAM2)
-        }
-    }
+    private var router: Router? = null
+    private var fragmentLogin: View? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater!!.inflate(R.layout.fragment_login, container, false)
+        fragmentLogin = inflater!!.inflate(R.layout.fragment_login, container, false)
+        fragmentLogin?.let { setListeners(it) }
+        return fragmentLogin
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri) {
-        if (mListener != null) {
-            mListener!!.onFragmentInteraction(uri)
+    private fun setListeners(container: View) {
+        val loginButton = container.findViewById<Button>(R.id.login_button)
+        loginButton.setOnClickListener { login() }
+        val registerTextView = container.findViewById<TextView>(R.id.register_text_view)
+        registerTextView.setOnClickListener { register() }
+    }
+
+    private fun login() {
+        val loginUsernameEditText = fragmentLogin
+                ?.findViewById<EditText>(R.id.login_username_text_input_edit_text)
+        val loginUsername: String? = loginUsernameEditText?.text.toString()
+        val loginPasswordEditText = fragmentLogin
+                ?.findViewById<EditText>(R.id.login_password_text_input_edit_text)
+        val loginPassword: String? = loginPasswordEditText?.text.toString()
+        if (loginUsername != null && loginPassword != null) {
+            if (loginUsername != "" && loginPassword != "") {
+                performLogin(loginUsername, loginPassword)
+            } else {
+                val message = getString(R.string.login_empty_fields)
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
-            mListener = context
-        } else {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
+    private fun performLogin(loginUsername: String, loginPassword: String) {
+        val sharePreferences = activity.getSharedPreferences(
+                getString(R.string.com_alanmarksp_fxneosys_SHARED_PREFERENCES_KEY),
+                Context.MODE_PRIVATE
+        )
+        val authenticationPresenter = AuthenticatePresenter(
+                AuthenticationRepository(),
+                TokenRepository(sharePreferences)
+        )
+        authenticationPresenter
+                .login(Authentication(loginUsername, loginPassword))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { loginSuccess() },
+                        { error -> loginFailure(error) }
+                )
+    }
+
+    private fun loginSuccess() {
+        router?.navigate(ROUTES.MAIN)
+    }
+
+    private fun loginFailure(error: Throwable) {
+        if (error is HttpException) {
+            val message = getString(R.string.login_failure_message)
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        mListener = null
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
-    interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
+    private fun register() {
+        router?.navigate(ROUTES.REGISTER)
     }
 
     companion object {
-        // TODO: Rename parameter arguments, choose names that match
-        // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-        private val ARG_PARAM1 = "param1"
-        private val ARG_PARAM2 = "param2"
 
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-
-         * @param param1 Parameter 1.
-         * *
-         * @param param2 Parameter 2.
-         * *
-         * @return A new instance of fragment LoginFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        fun newInstance(param1: String, param2: String): LoginFragment {
+        fun newInstance(router: Router): LoginFragment {
             val fragment = LoginFragment()
-            val args = Bundle()
-            args.putString(ARG_PARAM1, param1)
-            args.putString(ARG_PARAM2, param2)
-            fragment.arguments = args
+            fragment.router = router
             return fragment
         }
     }
-}// Required empty public constructor
+}

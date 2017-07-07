@@ -5,7 +5,7 @@ dist: trusty
 
 env:
   global:
-    - API=android-19
+    - API=19
     - TAG=google_apis
     - ABI=armeabi-v7a
     - QEMU_AUDIO_DRV=none
@@ -25,11 +25,11 @@ android:
     - tools
     - build-tools-26.0.0
     - android-26
-    - ${API}
-    - sys-img-{ABI}-${TAG}-${API}
+    - android-${API}
+    - sys-img-${ABI}-${TAG}-${API}
 
 before_install:
-  - export EMULATOR="system-images;${API};${TAG};${ABI}"
+  - export EMULATOR="system-images;android-${API};${TAG};${ABI}"
   - echo 'count=0' > /home/travis/.android/repositories.cfg
 
 install:

@@ -9,8 +9,13 @@
     <string name="register_title_text_view_text">Register</string>
     <string name="register_username_text_input_edit_text_hint">Username</string>
     <string name="register_password_text_input_edit_text_hint">Password</string>
-    <string name="register_password_confirmation_text_input_edit_text">Check Password</string>
+    <string name="register_password_confirmation_text_input_edit_text">Confirm Password</string>
     <string name="register_button_text">Register</string>
     <string name="already_a_member_text_view_text">Already a member?&#160;</string>
     <string name="login_text_view_text">Login</string>
+    <string name="login_failure_message">Incorrect username or password</string>
+    <string name="register_different_passwords_message">Password and password confirmation must be the same</string>
+    <string name="register_failure_message">Username already exists</string>
+    <string name="login_empty_fields">You must fill all fields</string>
+    <string name="register_empty_fields">You must fill all fields</string>
 </resources>

@@ -9,11 +9,15 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-
+import android.widget.Toast
 import com.alanmarksp.fxneosys.R
 import com.alanmarksp.fxneosys.models.Authentication
 import com.alanmarksp.fxneosys.presenters.AuthenticatePresenter
+import com.alanmarksp.fxneosys.retrofit.repositories.AuthenticationRepository
 import com.alanmarksp.fxneosys.views.Router
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import retrofit2.HttpException
 
 class RegisterFragment : Fragment() {
 
@@ -46,18 +50,47 @@ class RegisterFragment : Fragment() {
                 ?.findViewById<EditText>(R.id.register_password_text_input_edit_text)
         val registerPassword: String? = registerPasswordEditText?.text.toString()
         val registerConfirmationPasswordEditText = fragmentRegister
-                ?.findViewById<EditText>(R.id.register_password_text_input_edit_text)
+                ?.findViewById<EditText>(R.id.register_password_confirmation_text_input_edit_text)
         val registerConfirmationPassword: String? = registerConfirmationPasswordEditText?.text.toString()
         if (registerUsername != null &&
                 registerPassword != null &&
                 registerConfirmationPassword != null) {
-            if (registerPassword == registerConfirmationPassword) {
-                val authenticationPresenter = AuthenticatePresenter()
-                authenticationPresenter.register(Authentication(registerUsername, registerPassword))
+            if (registerUsername != "" &&
+                    registerPassword != "" &&
+                    registerConfirmationPassword != "") {
+                if (registerPassword == registerConfirmationPassword) {
+                    performRegister(registerUsername, registerPassword)
+                } else {
+                    val message = getString(R.string.register_different_passwords_message)
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                val message = getString(R.string.register_empty_fields)
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }
-            else {
-                //TODO handle different passwords
-            }
+        }
+    }
+
+    private fun performRegister(registerUsername: String, registerPassword: String) {
+        val authenticationPresenter = AuthenticatePresenter(AuthenticationRepository())
+        authenticationPresenter
+                .register(Authentication(registerUsername, registerPassword))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { registerSuccess() },
+                        { error -> registerFailure(error) }
+                )
+    }
+
+    private fun registerSuccess() {
+        router?.navigate("main")
+    }
+
+    private fun registerFailure(error: Throwable) {
+        if (error is HttpException) {
+            val message = getString(R.string.register_failure_message)
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -8,13 +8,16 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-
+import android.widget.Toast
 import com.alanmarksp.fxneosys.R
 import com.alanmarksp.fxneosys.models.Authentication
 import com.alanmarksp.fxneosys.presenters.AuthenticatePresenter
+import com.alanmarksp.fxneosys.retrofit.repositories.AuthenticationRepository
 import com.alanmarksp.fxneosys.views.Router
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import retrofit2.HttpException
+
 
 class LoginFragment : Fragment() {
 
@@ -43,24 +46,36 @@ class LoginFragment : Fragment() {
                 ?.findViewById<EditText>(R.id.login_password_text_input_edit_text)
         val loginPassword: String? = loginPasswordEditText?.text.toString()
         if (loginUsername != null && loginPassword != null) {
-            val authenticationPresenter = AuthenticatePresenter()
-            authenticationPresenter
-                    .login(Authentication(loginUsername, loginPassword))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            { response -> loginSuccess(response) },
-                            { error -> loginFailure(error) }
-                    )
+            if (loginUsername != "" && loginPassword != "") {
+                performLogin(loginUsername, loginPassword)
+            } else {
+                val message = getString(R.string.login_empty_fields)
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
-    private fun loginSuccess(response: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    private fun performLogin(loginUsername: String, loginPassword: String) {
+        val authenticationPresenter = AuthenticatePresenter(AuthenticationRepository())
+        authenticationPresenter
+                .login(Authentication(loginUsername, loginPassword))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { loginSuccess() },
+                        { error -> loginFailure(error) }
+                )
+    }
+
+    private fun loginSuccess() {
+        router?.navigate("main")
     }
 
     private fun loginFailure(error: Throwable) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (error is HttpException) {
+            val message = getString(R.string.login_failure_message)
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun register() {

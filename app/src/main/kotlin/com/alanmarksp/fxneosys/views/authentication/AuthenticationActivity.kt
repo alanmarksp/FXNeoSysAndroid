@@ -1,12 +1,12 @@
 package com.alanmarksp.fxneosys.views.authentication
 
+import android.content.Intent
+import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
-import android.widget.Toast
-
 import com.alanmarksp.fxneosys.R
 import com.alanmarksp.fxneosys.views.Router
+import com.alanmarksp.fxneosys.views.main.MainActivity
 
 class AuthenticationActivity : AppCompatActivity(), Router {
 
@@ -29,7 +29,11 @@ class AuthenticationActivity : AppCompatActivity(), Router {
     }
 
     override fun navigate(route: String) {
-        if (routes.containsKey(route)) {
+        if (route == "main") {
+            val intent: Intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        } else if (routes.containsKey(route)) {
             supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.authentication_fragment_container, routes[route])

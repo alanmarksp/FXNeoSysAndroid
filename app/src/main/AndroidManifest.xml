@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.alanmarksp.fxneosys">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,10 +20,12 @@
         </activity>
         <activity
             android:name=".views.authentication.AuthenticationActivity"
-            android:theme="@style/AuthenticationTheme" />
+            android:theme="@style/AuthenticationTheme"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".views.main.MainActivity"
-            android:theme="@style/MainTheme" />
+            android:theme="@style/MainTheme"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

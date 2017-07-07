@@ -18,4 +18,5 @@
     <string name="register_failure_message">Username already exists</string>
     <string name="login_empty_fields">You must fill all fields</string>
     <string name="register_empty_fields">You must fill all fields</string>
+    <string name="com.alanmarksp.fxneosys.SHARED_PREFERENCES_KEY">com.alanmarksp.fxneosys.SHARED_PREFERENCES</string>
 </resources>

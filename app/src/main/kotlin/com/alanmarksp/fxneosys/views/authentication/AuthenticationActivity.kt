@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import com.alanmarksp.fxneosys.R
+import com.alanmarksp.fxneosys.utils.Constants.ROUTES
 import com.alanmarksp.fxneosys.views.Router
 import com.alanmarksp.fxneosys.views.main.MainActivity
 
@@ -15,12 +16,15 @@ class AuthenticationActivity : AppCompatActivity(), Router {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authentication)
+        initActivity()
+    }
 
+    private fun initActivity() {
         val loginFragment: Fragment = LoginFragment.newInstance(this)
         val registerFragment: Fragment = RegisterFragment.newInstance(this)
 
-        routes["login"] = loginFragment
-        routes["register"] = registerFragment
+        routes[ROUTES.LOGIN] = loginFragment
+        routes[ROUTES.REGISTER] = registerFragment
 
         supportFragmentManager
                 .beginTransaction()
@@ -29,7 +33,7 @@ class AuthenticationActivity : AppCompatActivity(), Router {
     }
 
     override fun navigate(route: String) {
-        if (route == "main") {
+        if (route == ROUTES.MAIN) {
             val intent: Intent = Intent(applicationContext, MainActivity::class.java)
             startActivity(intent)
             finish()

@@ -1,11 +1,12 @@
 package com.alanmarksp.fxneosys.retrofit.repositories
 
 import com.alanmarksp.fxneosys.models.Authentication
+import com.alanmarksp.fxneosys.repositories.AuthenticationRepository
 import com.alanmarksp.fxneosys.retrofit.RetrofitSingleton
 import com.alanmarksp.fxneosys.retrofit.services.AuthenticationService
 import io.reactivex.Observable
 
-class AuthenticationRepository : com.alanmarksp.fxneosys.repositories.AuthenticationRepository {
+class AuthenticationRepository : AuthenticationRepository {
 
     private val authenticationService: AuthenticationService = RetrofitSingleton
             .retrofit

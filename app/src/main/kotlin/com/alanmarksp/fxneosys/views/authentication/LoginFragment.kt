@@ -1,5 +1,6 @@
 package com.alanmarksp.fxneosys.views.authentication
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -10,9 +11,11 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import com.alanmarksp.fxneosys.R
+import com.alanmarksp.fxneosys.local.repositories.TokenRepository
 import com.alanmarksp.fxneosys.models.Authentication
 import com.alanmarksp.fxneosys.presenters.AuthenticatePresenter
 import com.alanmarksp.fxneosys.retrofit.repositories.AuthenticationRepository
+import com.alanmarksp.fxneosys.utils.Constants.ROUTES
 import com.alanmarksp.fxneosys.views.Router
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -56,7 +59,14 @@ class LoginFragment : Fragment() {
     }
 
     private fun performLogin(loginUsername: String, loginPassword: String) {
-        val authenticationPresenter = AuthenticatePresenter(AuthenticationRepository())
+        val sharePreferences = activity.getSharedPreferences(
+                getString(R.string.com_alanmarksp_fxneosys_SHARED_PREFERENCES_KEY),
+                Context.MODE_PRIVATE
+        )
+        val authenticationPresenter = AuthenticatePresenter(
+                AuthenticationRepository(),
+                TokenRepository(sharePreferences)
+        )
         authenticationPresenter
                 .login(Authentication(loginUsername, loginPassword))
                 .subscribeOn(Schedulers.io())
@@ -68,7 +78,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun loginSuccess() {
-        router?.navigate("main")
+        router?.navigate(ROUTES.MAIN)
     }
 
     private fun loginFailure(error: Throwable) {
@@ -79,7 +89,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun register() {
-        router?.navigate("register")
+        router?.navigate(ROUTES.REGISTER)
     }
 
     companion object {

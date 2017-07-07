@@ -1,3 +1,4 @@
 package com.alanmarksp.fxneosys.models
 
-class Authentication {}
+data class Authentication(private val username: String,
+                          private val password: String) {}

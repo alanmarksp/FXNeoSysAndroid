@@ -1,104 +1,86 @@
 package com.alanmarksp.fxneosys.views.main
 
-import android.content.Context
-import android.net.Uri
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.view.GravityCompat
+import android.support.v4.widget.DrawerLayout
+import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-
 import com.alanmarksp.fxneosys.R
+import com.alanmarksp.fxneosys.views.Router
 
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [DashboardFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [DashboardFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+
 class DashboardFragment : Fragment() {
 
-    // TODO: Rename and change types of parameters
-    private var mParam1: String? = null
-    private var mParam2: String? = null
+    private var router: Router? = null
+    private var fragmentDashboard: View? = null
+    private var dashboardDrawerLayout: DrawerLayout? = null
+    private var toolbar: Toolbar? = null
+    private var drawerToggle: ActionBarDrawerToggle? = null
 
-    private var mListener: OnFragmentInteractionListener? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            mParam1 = arguments.getString(ARG_PARAM1)
-            mParam2 = arguments.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater!!.inflate(R.layout.fragment_dashboard, container, false)
+        fragmentDashboard = inflater!!.inflate(R.layout.fragment_dashboard, container, false)
+        initFragment()
+        getProfile()
+        getTradingAccounts()
+        return fragmentDashboard
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri) {
-        if (mListener != null) {
-            mListener!!.onFragmentInteraction(uri)
+    private fun initFragment() {
+        val appCompatActivitity = activity as AppCompatActivity
+        setHasOptionsMenu(true)
+        toolbar = fragmentDashboard?.findViewById(R.id.toolbar)
+        appCompatActivitity.setSupportActionBar(toolbar)
+        appCompatActivitity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        dashboardDrawerLayout = fragmentDashboard?.findViewById(R.id.dashboard_drawer_layout)
+        drawerToggle = ActionBarDrawerToggle(activity, dashboardDrawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close)
+        dashboardDrawerLayout?.addDrawerListener(drawerToggle!!)
+        drawerToggle?.isDrawerIndicatorEnabled = true
+        drawerToggle?.syncState()
+    }
+
+    private fun getProfile() {
+
+    }
+
+    private fun getTradingAccounts() {
+
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            android.R.id.home -> {
+                dashboardDrawerLayout?.openDrawer(GravityCompat.START)
+                return true
+            }
         }
+        return super.onOptionsItemSelected(item)
     }
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
-            mListener = context
-        } else {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
-        }
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        drawerToggle?.syncState()
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        mListener = null
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
-    interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        drawerToggle?.onConfigurationChanged(newConfig)
     }
 
     companion object {
-        // TODO: Rename parameter arguments, choose names that match
-        // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-        private val ARG_PARAM1 = "param1"
-        private val ARG_PARAM2 = "param2"
 
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-
-         * @param param1 Parameter 1.
-         * *
-         * @param param2 Parameter 2.
-         * *
-         * @return A new instance of fragment DashboardFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        fun newInstance(param1: String, param2: String): DashboardFragment {
+        fun newInstance(router: Router): DashboardFragment {
             val fragment = DashboardFragment()
-            val args = Bundle()
-            args.putString(ARG_PARAM1, param1)
-            args.putString(ARG_PARAM2, param2)
-            fragment.arguments = args
+            fragment.router = router
             return fragment
         }
     }
-}// Required empty public constructor
+}

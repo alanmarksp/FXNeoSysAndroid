@@ -52,7 +52,7 @@ class LoginFragment : Fragment() {
             if (loginUsername != "" && loginPassword != "") {
                 performLogin(loginUsername, loginPassword)
             } else {
-                val message = getString(R.string.login_empty_fields)
+                val message = getString(R.string.login_empty_fields_message)
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }
         }

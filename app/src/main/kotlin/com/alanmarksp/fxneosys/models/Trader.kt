@@ -1,3 +1,6 @@
 package com.alanmarksp.fxneosys.models
 
-class Trader {}
+data class Trader(private val username: String,
+                  private val email: String,
+                  private val first_name: String,
+                  private val last_name: String) {}

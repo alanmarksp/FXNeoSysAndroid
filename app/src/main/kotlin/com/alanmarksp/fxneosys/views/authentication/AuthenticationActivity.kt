@@ -22,10 +22,8 @@ class AuthenticationActivity : AppCompatActivity(), Router {
     private fun initActivity() {
         val loginFragment: Fragment = LoginFragment.newInstance(this)
         val registerFragment: Fragment = RegisterFragment.newInstance(this)
-
         routes[ROUTES.LOGIN] = loginFragment
         routes[ROUTES.REGISTER] = registerFragment
-
         supportFragmentManager
                 .beginTransaction()
                 .add(R.id.authentication_fragment_container, loginFragment)

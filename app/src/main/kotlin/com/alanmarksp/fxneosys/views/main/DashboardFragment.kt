@@ -2,6 +2,7 @@ package com.alanmarksp.fxneosys.views.main
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
@@ -12,8 +13,14 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.alanmarksp.fxneosys.R
+import com.alanmarksp.fxneosys.models.Trader
+import com.alanmarksp.fxneosys.presenters.ShowDashboardPresenter
+import com.alanmarksp.fxneosys.retrofit.repositories.TraderRepository
 import com.alanmarksp.fxneosys.views.Router
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 
 class DashboardFragment : Fragment() {
@@ -48,7 +55,25 @@ class DashboardFragment : Fragment() {
     }
 
     private fun getProfile() {
+        val showDashBoardPresenter = ShowDashboardPresenter()
+        showDashBoardPresenter.setTraderRepository(TraderRepository())
+        showDashBoardPresenter
+                .getProfile()
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(
+                        { trader -> getProfileSuccess(trader) }
+                )
+    }
 
+    private fun getProfileSuccess(trader: Trader) {
+        val navigationView = fragmentDashboard
+                ?.findViewById<NavigationView>(R.id.dashboard_menu_navigation_view)
+        val navHeader = navigationView?.getHeaderView(0)
+        val headerUsername = navHeader?.findViewById<TextView>(R.id.header_username)
+        val headerEmail = navHeader?.findViewById<TextView>(R.id.header_email)
+        headerUsername?.text = trader.username
+        headerEmail?.text = trader.email
     }
 
     private fun getTradingAccounts() {

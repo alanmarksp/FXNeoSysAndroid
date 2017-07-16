@@ -48,7 +48,7 @@ class DashboardFragment : Fragment(), Router {
         val contentFragment: Fragment = ContentFragment.newInstance(this)
         activity.supportFragmentManager
                 .beginTransaction()
-                .add(R.id.dashboard_content_fragment_container, contentFragment)
+                .add(R.id.dashboard_fragment_container, contentFragment)
                 .commit()
     }
 

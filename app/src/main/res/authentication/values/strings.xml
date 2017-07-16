@@ -25,6 +25,6 @@
     <string name="action_quotes_title">Quotes</string>
     <string name="action_positions_title">Positions</string>
     <string name="action_pending_orders_title">Pending Orders</string>
-    <string name="action_history_title">History</string>
+    <string name="action_orders_title">History</string>
     <string name="action_account_title">Account</string>
 </resources>

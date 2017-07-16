@@ -88,6 +88,9 @@ class LoginFragment : Fragment() {
             val message = getString(R.string.login_failure_message)
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
+        else {
+            throw error
+        }
     }
 
     private fun register() {

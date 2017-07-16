@@ -4,32 +4,34 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.TextView
 import com.alanmarksp.fxneosys.R
 import com.alanmarksp.fxneosys.models.Trader
+import com.alanmarksp.fxneosys.models.TradingAccount
 import com.alanmarksp.fxneosys.presenters.ShowDashboardPresenter
 import com.alanmarksp.fxneosys.retrofit.repositories.TraderRepository
+import com.alanmarksp.fxneosys.retrofit.repositories.TradingAccountRepository
 import com.alanmarksp.fxneosys.views.Router
+import com.alanmarksp.fxneosys.views.main.content.ContentFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 
-class DashboardFragment : Fragment() {
+class DashboardFragment : Fragment(), Router {
 
     private var router: Router? = null
     private var fragmentDashboard: View? = null
     private var dashboardDrawerLayout: DrawerLayout? = null
     private var toolbar: Toolbar? = null
     private var drawerToggle: ActionBarDrawerToggle? = null
+    private var navigationView: NavigationView? = null
 
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -42,6 +44,15 @@ class DashboardFragment : Fragment() {
     }
 
     private fun initFragment() {
+        initNavigationDrawer()
+        val contentFragment: Fragment = ContentFragment.newInstance(this)
+        activity.supportFragmentManager
+                .beginTransaction()
+                .add(R.id.dashboard_content_fragment_container, contentFragment)
+                .commit()
+    }
+
+    private fun initNavigationDrawer() {
         val appCompatActivitity = activity as AppCompatActivity
         setHasOptionsMenu(true)
         toolbar = fragmentDashboard?.findViewById(R.id.toolbar)
@@ -67,7 +78,7 @@ class DashboardFragment : Fragment() {
     }
 
     private fun getProfileSuccess(trader: Trader) {
-        val navigationView = fragmentDashboard
+        navigationView = fragmentDashboard
                 ?.findViewById<NavigationView>(R.id.dashboard_menu_navigation_view)
         val navHeader = navigationView?.getHeaderView(0)
         val headerUsername = navHeader?.findViewById<TextView>(R.id.header_username)
@@ -77,7 +88,32 @@ class DashboardFragment : Fragment() {
     }
 
     private fun getTradingAccounts() {
+        val showDashBoardPresenter = ShowDashboardPresenter()
+        showDashBoardPresenter.setTradingAccountRepository(TradingAccountRepository())
+        showDashBoardPresenter
+                .getTradingAccounts()
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(
+                        { tradingAccounts -> getTradingAccountsSuccess(tradingAccounts) },
+                        { error -> errorS(error)}
+                )
+    }
 
+    private fun getTradingAccountsSuccess(tradingAccounts: List<TradingAccount>) {
+        val menu = navigationView?.menu
+        if (tradingAccounts.isNotEmpty()) {
+            tradingAccounts
+                    .map { menu?.add(R.id.trading_accounts_group, it.id, Menu.NONE, "Account #${it.id}") }
+                    .forEach { it?.icon = ContextCompat.getDrawable(activity, R.drawable.ic_label_outline) }
+        }
+        else {
+            menu?.add(R.id.trading_accounts_group, Menu.NONE, Menu.NONE, "You don't have Accounts")
+        }
+    }
+
+    private fun errorS(error: Throwable) {
+        throw error
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -107,5 +143,9 @@ class DashboardFragment : Fragment() {
             fragment.router = router
             return fragment
         }
+    }
+
+    override fun navigate(route: String) {
+        router?.navigate(route)
     }
 }

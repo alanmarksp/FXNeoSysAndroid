@@ -1,3 +1,5 @@
 package com.alanmarksp.fxneosys.models
 
-class TradingAccount {}
+data class TradingAccount(val funds: Float,
+                          val realized_profit: Float,
+                          val id: Int)

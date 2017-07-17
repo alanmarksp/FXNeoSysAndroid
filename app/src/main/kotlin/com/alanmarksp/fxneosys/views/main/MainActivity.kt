@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import com.alanmarksp.fxneosys.R
-import com.alanmarksp.fxneosys.utils.Constants
+import com.alanmarksp.fxneosys.utils.Constants.ROUTES
 import com.alanmarksp.fxneosys.views.Router
 import com.alanmarksp.fxneosys.views.authentication.AuthenticationActivity
 
@@ -21,7 +21,9 @@ class MainActivity : AppCompatActivity(), Router {
 
     private fun initActivity() {
         val dashboardFragment: Fragment = DashboardFragment.newInstance(this)
-        routes[Constants.ROUTES.DASHBOARD] = dashboardFragment
+        val profileFragment: ProfileFragment = ProfileFragment.newInstance(this)
+        routes[ROUTES.DASHBOARD] = dashboardFragment
+        routes[ROUTES.PROFILE] = profileFragment
         supportFragmentManager
                 .beginTransaction()
                 .add(R.id.main_fragment_container, dashboardFragment)
@@ -29,7 +31,7 @@ class MainActivity : AppCompatActivity(), Router {
     }
 
     override fun navigate(route: String) {
-        if (route == Constants.ROUTES.AUTHENTICATION) {
+        if (route == ROUTES.AUTHENTICATION) {
             val intent: Intent = Intent(applicationContext, AuthenticationActivity::class.java)
             startActivity(intent)
             finish()
@@ -37,6 +39,7 @@ class MainActivity : AppCompatActivity(), Router {
             supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.main_fragment_container, routes[route])
+                    .addToBackStack(null)
                     .commit()
         }
     }

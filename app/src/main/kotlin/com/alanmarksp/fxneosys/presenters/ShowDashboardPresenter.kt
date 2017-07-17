@@ -25,4 +25,8 @@ class ShowDashboardPresenter {
     fun getTradingAccounts(): Observable<List<TradingAccount>>? {
         return tradingAccountRepository?.getTradingAccounts()
     }
+
+    fun getSelectedTradingAccount(): Observable<TradingAccount>? {
+        return tradingAccountRepository?.getSelectedTradingAccount()
+    }
 }

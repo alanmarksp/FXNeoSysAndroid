@@ -27,4 +27,7 @@
     <string name="action_pending_orders_title">Pending Orders</string>
     <string name="action_orders_title">History</string>
     <string name="action_account_title">Account</string>
+    <string name="trading_account_id_text_view_caption">Id</string>
+    <string name="trading_account_funds_text_view_caption">Funds</string>
+    <string name="trading_account_realized_profit_text_view_caption">Realized Profit</string>
 </resources>

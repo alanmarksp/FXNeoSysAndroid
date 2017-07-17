@@ -15,4 +15,8 @@ class TradingAccountRepository(): TradingAccountRepository {
     override fun getTradingAccounts(): Observable<List<TradingAccount>> {
         return tradingAccountsService.getTradingAccounts()
     }
+
+    override fun getSelectedTradingAccount(): Observable<TradingAccount> {
+        return tradingAccountsService.getSelectedTradingAccount()
+    }
 }

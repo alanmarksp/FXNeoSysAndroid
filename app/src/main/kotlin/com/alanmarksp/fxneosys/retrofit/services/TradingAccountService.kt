@@ -8,4 +8,7 @@ interface TradingAccountService {
 
     @GET("trading_accounts/")
     fun getTradingAccounts(): Observable<List<TradingAccount>>
+
+    @GET("trading_accounts/selected/")
+    fun getSelectedTradingAccount(): Observable<TradingAccount>
 }

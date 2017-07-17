@@ -14,4 +14,8 @@ class ManageProfilePresenter {
     fun getProfile(): Observable<Trader>? {
         return traderRepository?.getProfile()
     }
+
+    fun updateProfile(trader: Trader): Observable<Trader>? {
+        return traderRepository?.updateProfile(trader)
+    }
 }

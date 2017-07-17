@@ -34,4 +34,7 @@
     <string name="profile_email_text_view_caption">Email</string>
     <string name="profile_first_name_text_view_caption">First Name</string>
     <string name="profile_last_name_text_view_caption">Last Name</string>
+    <string name="edit_profile_email_text_input_edit_text_hint">Email</string>
+    <string name="edit_profile_first_name_text_input_edit_text_hint">First Name</string>
+    <string name="edit_profile_last_name_text_input_edit_text_hint">Last Name</string>
 </resources>

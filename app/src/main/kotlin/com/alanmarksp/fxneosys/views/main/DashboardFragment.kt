@@ -1,5 +1,6 @@
 package com.alanmarksp.fxneosys.views.main
 
+import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -12,12 +13,14 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.*
 import android.widget.TextView
+import android.widget.Toast
 import com.alanmarksp.fxneosys.R
 import com.alanmarksp.fxneosys.models.Trader
 import com.alanmarksp.fxneosys.models.TradingAccount
 import com.alanmarksp.fxneosys.presenters.ShowDashboardPresenter
 import com.alanmarksp.fxneosys.retrofit.repositories.TraderRepository
 import com.alanmarksp.fxneosys.retrofit.repositories.TradingAccountRepository
+import com.alanmarksp.fxneosys.utils.Constants.ROUTES
 import com.alanmarksp.fxneosys.views.Router
 import com.alanmarksp.fxneosys.views.main.content.ContentFragment
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -33,7 +36,6 @@ class DashboardFragment : Fragment(), Router {
     private var drawerToggle: ActionBarDrawerToggle? = null
     private var navigationView: NavigationView? = null
 
-
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         fragmentDashboard = inflater!!.inflate(R.layout.fragment_dashboard, container, false)
@@ -44,6 +46,11 @@ class DashboardFragment : Fragment(), Router {
     }
 
     private fun initFragment() {
+        val appCompatActivity = activity as AppCompatActivity
+        setHasOptionsMenu(true)
+        toolbar = fragmentDashboard?.findViewById(R.id.toolbar)
+        appCompatActivity.setSupportActionBar(toolbar)
+        appCompatActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         initNavigationDrawer()
         val contentFragment: Fragment = ContentFragment.newInstance(this)
         activity.supportFragmentManager
@@ -53,16 +60,28 @@ class DashboardFragment : Fragment(), Router {
     }
 
     private fun initNavigationDrawer() {
-        val appCompatActivitity = activity as AppCompatActivity
-        setHasOptionsMenu(true)
-        toolbar = fragmentDashboard?.findViewById(R.id.toolbar)
-        appCompatActivitity.setSupportActionBar(toolbar)
-        appCompatActivitity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         dashboardDrawerLayout = fragmentDashboard?.findViewById(R.id.dashboard_drawer_layout)
         drawerToggle = ActionBarDrawerToggle(activity, dashboardDrawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close)
         dashboardDrawerLayout?.addDrawerListener(drawerToggle!!)
         drawerToggle?.isDrawerIndicatorEnabled = true
         drawerToggle?.syncState()
+        navigationView = fragmentDashboard
+                ?.findViewById<NavigationView>(R.id.dashboard_menu_navigation_view)
+        navigationView?.let { setNavigationViewListeners(it) }
+    }
+
+    private fun setNavigationViewListeners(navigationView: NavigationView) {
+        navigationView.setNavigationItemSelectedListener(
+                NavigationView.OnNavigationItemSelectedListener { item ->
+                    when (item.itemId) {
+                        R.id.nav_settings -> {
+                            navigate(ROUTES.PROFILE)
+                            return@OnNavigationItemSelectedListener true
+                        }
+                    }
+                    false
+                }
+        )
     }
 
     private fun getProfile() {
@@ -78,8 +97,6 @@ class DashboardFragment : Fragment(), Router {
     }
 
     private fun getProfileSuccess(trader: Trader) {
-        navigationView = fragmentDashboard
-                ?.findViewById<NavigationView>(R.id.dashboard_menu_navigation_view)
         val navHeader = navigationView?.getHeaderView(0)
         val headerUsername = navHeader?.findViewById<TextView>(R.id.header_username)
         val headerEmail = navHeader?.findViewById<TextView>(R.id.header_email)

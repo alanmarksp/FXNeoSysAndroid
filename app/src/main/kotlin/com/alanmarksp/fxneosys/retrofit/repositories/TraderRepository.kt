@@ -16,4 +16,7 @@ class TraderRepository : TraderRepository {
         return traderService.getProfile()
     }
 
+    override fun updateProfile(trader: Trader): Observable<Trader> {
+        return traderService.updateProfile(trader)
+    }
 }

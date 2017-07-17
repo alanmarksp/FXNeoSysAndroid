@@ -26,7 +26,7 @@ class ContentFragment : Fragment(), Router {
 
     private fun initFragment() {
         bottomNavigation = fragmentContent?.findViewById(R.id.bottom_navigation)
-        bottomNavigation?.let { setListeners(it) }
+        bottomNavigation?.let { setBottomNavigationListeners(it) }
         val positionsFragment: PositionsFragment = PositionsFragment.newInstance(this)
         val quotesFragment: QuotesFragment = QuotesFragment.newInstance(this)
         val pendingOrdersFragment: PendingOrdersFragment = PendingOrdersFragment.newInstance(this)
@@ -43,7 +43,7 @@ class ContentFragment : Fragment(), Router {
                 .commit()
     }
 
-    private fun setListeners(bottomNavigation: BottomNavigationView) {
+    private fun setBottomNavigationListeners(bottomNavigation: BottomNavigationView) {
         bottomNavigation.setOnNavigationItemSelectedListener(
                 BottomNavigationView.OnNavigationItemSelectedListener { item ->
                     when (item.itemId) {

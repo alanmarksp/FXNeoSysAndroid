@@ -2,6 +2,7 @@ package com.alanmarksp.fxneosys.views.main.content
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -10,9 +11,11 @@ import android.view.ViewGroup
 import com.alanmarksp.fxneosys.R
 import com.alanmarksp.fxneosys.adapters.QuotesRecyclerAdapter
 import com.alanmarksp.fxneosys.models.Quote
+import com.alanmarksp.fxneosys.presenters.ShowQuotesPresenter
+import com.alanmarksp.fxneosys.retrofit.repositories.QuoteRepository
 import com.alanmarksp.fxneosys.views.Router
-import android.support.v7.widget.DividerItemDecoration
-
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 
 class QuotesFragment : Fragment() {
@@ -28,6 +31,7 @@ class QuotesFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         fragmentQuotes = inflater!!.inflate(R.layout.fragment_quotes, container, false)
         initFragment()
+        getQuotes()
         return fragmentQuotes
     }
 
@@ -40,8 +44,22 @@ class QuotesFragment : Fragment() {
         val dividerItemDecoration = DividerItemDecoration(quotesRecyclerView?.context,
                 linearLayoutManager?.orientation!!)
         quotesRecyclerView?.addItemDecoration(dividerItemDecoration)
-        quotes.add(Quote("EURUSD", 1.0000, 1.0002))
-        quotes.add(Quote("EURUSD", 1.0000, 1.0002))
+    }
+
+    private fun getQuotes() {
+        val showQuotesPresenter = ShowQuotesPresenter()
+        showQuotesPresenter.setQuoteRepository(QuoteRepository())
+        showQuotesPresenter
+                .getQuotes()
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe({quotes -> getQuoteSuccess(quotes)})
+    }
+
+    private fun getQuoteSuccess(quotes: List<Quote>) {
+        this.quotes.clear()
+        this.quotes.addAll(quotes)
+        quotesRecyclerAdapter?.notifyDataSetChanged()
     }
 
     companion object {

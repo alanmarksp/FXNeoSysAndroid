@@ -1,6 +1,5 @@
 package com.alanmarksp.fxneosys.views.main
 
-import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
 import android.support.design.widget.NavigationView
@@ -13,7 +12,6 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.*
 import android.widget.TextView
-import android.widget.Toast
 import com.alanmarksp.fxneosys.R
 import com.alanmarksp.fxneosys.models.Trader
 import com.alanmarksp.fxneosys.models.TradingAccount

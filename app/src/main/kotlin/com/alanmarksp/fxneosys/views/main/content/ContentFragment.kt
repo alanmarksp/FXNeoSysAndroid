@@ -1,104 +1,91 @@
 package com.alanmarksp.fxneosys.views.main.content
 
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.alanmarksp.fxneosys.R
+import com.alanmarksp.fxneosys.utils.Constants.ROUTES
+import com.alanmarksp.fxneosys.views.Router
 
-/**
- * A simple [Fragment] subclass.
- * Activities that contain this fragment must implement the
- * [ContentFragment.OnFragmentInteractionListener] interface
- * to handle interaction events.
- * Use the [ContentFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class ContentFragment : Fragment() {
+class ContentFragment : Fragment(), Router {
 
-    // TODO: Rename and change types of parameters
-    private var mParam1: String? = null
-    private var mParam2: String? = null
-
-    private var mListener: OnFragmentInteractionListener? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            mParam1 = arguments.getString(ARG_PARAM1)
-            mParam2 = arguments.getString(ARG_PARAM2)
-        }
-    }
+    private var router: Router? = null
+    private var fragmentContent: View? = null
+    private var bottomNavigation: BottomNavigationView? = null
+    private val routes: HashMap<String, Fragment> = HashMap()
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater!!.inflate(R.layout.fragment_content, container, false)
+        fragmentContent = inflater!!.inflate(R.layout.fragment_content, container, false)
+        initFragment()
+        return fragmentContent
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri) {
-        if (mListener != null) {
-            mListener!!.onFragmentInteraction(uri)
-        }
+    private fun initFragment() {
+        bottomNavigation = fragmentContent?.findViewById(R.id.bottom_navigation)
+        bottomNavigation?.let { setListeners(it) }
+        val positionsFragment: PositionsFragment = PositionsFragment.newInstance(this)
+        val quotesFragment: QuotesFragment = QuotesFragment.newInstance(this)
+        val pendingOrdersFragment: PendingOrdersFragment = PendingOrdersFragment.newInstance(this)
+        val ordersFragment: OrdersFragment = OrdersFragment.newInstance(this)
+        val tradingAccountFragment: TradingAccountFragment = TradingAccountFragment.newInstance(this)
+        routes[ROUTES.POSITIONS] = positionsFragment
+        routes[ROUTES.QUOTES] = quotesFragment
+        routes[ROUTES.PENDING_ORDERS] = pendingOrdersFragment
+        routes[ROUTES.ORDERS] = ordersFragment
+        routes[ROUTES.TRADING_ACCOUNT] = tradingAccountFragment
+        activity.supportFragmentManager
+                .beginTransaction()
+                .add(R.id.dashboard_content_fragment_container, quotesFragment)
+                .commit()
     }
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
-            mListener = context
-        } else {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
-        }
+    private fun setListeners(bottomNavigation: BottomNavigationView) {
+        bottomNavigation.setOnNavigationItemSelectedListener(
+                BottomNavigationView.OnNavigationItemSelectedListener { item ->
+                    when (item.itemId) {
+                        R.id.action_quotes -> {
+                            navigate(ROUTES.QUOTES)
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.action_positions -> {
+                            navigate(ROUTES.POSITIONS)
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.action_pending_orders -> {
+                            navigate(ROUTES.PENDING_ORDERS)
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.action_orders -> {
+                            navigate(ROUTES.ORDERS)
+                            return@OnNavigationItemSelectedListener true
+                        }
+                        R.id.action_account -> {
+                            navigate(ROUTES.TRADING_ACCOUNT)
+                            return@OnNavigationItemSelectedListener true
+                        }
+                    }
+                    false
+                }
+        )
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        mListener = null
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
-    interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
+    override fun navigate(route: String) {
+        activity.supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.dashboard_content_fragment_container, routes[route])
+                .commit()
     }
 
     companion object {
-        // TODO: Rename parameter arguments, choose names that match
-        // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-        private val ARG_PARAM1 = "param1"
-        private val ARG_PARAM2 = "param2"
 
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-
-         * @param param1 Parameter 1.
-         * *
-         * @param param2 Parameter 2.
-         * *
-         * @return A new instance of fragment ContentFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        fun newInstance(param1: String, param2: String): ContentFragment {
+        fun newInstance(router: Router): ContentFragment {
             val fragment = ContentFragment()
-            val args = Bundle()
-            args.putString(ARG_PARAM1, param1)
-            args.putString(ARG_PARAM2, param2)
-            fragment.arguments = args
+            fragment.router = router
             return fragment
         }
     }
-}// Required empty public constructor
+}

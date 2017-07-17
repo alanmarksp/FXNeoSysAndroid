@@ -14,6 +14,7 @@ import com.alanmarksp.fxneosys.R
 import com.alanmarksp.fxneosys.local.repositories.TokenRepository
 import com.alanmarksp.fxneosys.models.Authentication
 import com.alanmarksp.fxneosys.presenters.AuthenticatePresenter
+import com.alanmarksp.fxneosys.retrofit.RetrofitSingleton
 import com.alanmarksp.fxneosys.retrofit.repositories.AuthenticationRepository
 import com.alanmarksp.fxneosys.utils.Constants.ROUTES
 import com.alanmarksp.fxneosys.views.Router
@@ -52,7 +53,7 @@ class LoginFragment : Fragment() {
             if (loginUsername != "" && loginPassword != "") {
                 performLogin(loginUsername, loginPassword)
             } else {
-                val message = getString(R.string.login_empty_fields)
+                val message = getString(R.string.login_empty_fields_message)
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }
         }
@@ -72,12 +73,13 @@ class LoginFragment : Fragment() {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { loginSuccess() },
+                        { token -> loginSuccess(token) },
                         { error -> loginFailure(error) }
                 )
     }
 
-    private fun loginSuccess() {
+    private fun loginSuccess(token: String) {
+        RetrofitSingleton.addToken(token)
         router?.navigate(ROUTES.MAIN)
     }
 
@@ -85,6 +87,9 @@ class LoginFragment : Fragment() {
         if (error is HttpException) {
             val message = getString(R.string.login_failure_message)
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+        else {
+            throw error
         }
     }
 

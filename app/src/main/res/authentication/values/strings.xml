@@ -16,7 +16,18 @@
     <string name="login_failure_message">Incorrect username or password</string>
     <string name="register_different_passwords_message">Password and password confirmation must be the same</string>
     <string name="register_failure_message">Username already exists</string>
-    <string name="login_empty_fields">You must fill all fields</string>
-    <string name="register_empty_fields">You must fill all fields</string>
+    <string name="login_empty_fields_message">You must fill all fields</string>
+    <string name="register_empty_fields_message">You must fill all fields</string>
     <string name="com.alanmarksp.fxneosys.SHARED_PREFERENCES_KEY">com.alanmarksp.fxneosys.SHARED_PREFERENCES</string>
+    <string name="nav_settings_title">Settings</string>
+    <string name="nav_create_account_title">Create Account</string>
+    <string name="nav_logout_title">Logout</string>
+    <string name="action_quotes_title">Quotes</string>
+    <string name="action_positions_title">Positions</string>
+    <string name="action_pending_orders_title">Pending Orders</string>
+    <string name="action_orders_title">History</string>
+    <string name="action_account_title">Account</string>
+    <string name="trading_account_id_text_view_caption">Id</string>
+    <string name="trading_account_funds_text_view_caption">Funds</string>
+    <string name="trading_account_realized_profit_text_view_caption">Realized Profit</string>
 </resources>

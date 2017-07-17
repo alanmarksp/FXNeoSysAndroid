@@ -67,7 +67,7 @@ class RegisterFragment : Fragment() {
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 }
             } else {
-                val message = getString(R.string.register_empty_fields)
+                val message = getString(R.string.register_empty_fields_message)
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
             }
         }

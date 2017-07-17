@@ -16,6 +16,12 @@ class Constants {
             val LOGIN = "login"
             val REGISTER = "register"
             val MAIN = "main"
+            val DASHBOARD = "dashboard"
+            val QUOTES = "quotes"
+            val POSITIONS = "positions"
+            val PENDING_ORDERS = "pending_orders"
+            val ORDERS = "orders"
+            val TRADING_ACCOUNT = "trading_account"
         }
     }
 }

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.alanmarksp.fxneosys.R
 import com.alanmarksp.fxneosys.local.repositories.TokenRepository
+import com.alanmarksp.fxneosys.retrofit.RetrofitSingleton
 import com.alanmarksp.fxneosys.utils.Constants.ROUTES
 import com.alanmarksp.fxneosys.views.authentication.AuthenticationActivity
 import com.alanmarksp.fxneosys.views.main.MainActivity
@@ -24,7 +25,9 @@ class SplashActivity : AppCompatActivity(), Router {
                 Context.MODE_PRIVATE
         )
         val tokenRepository = TokenRepository(sharePreferences)
-        if (tokenRepository.get() != null){
+        val token = tokenRepository.get()
+        if (token != null){
+            RetrofitSingleton.addToken(token)
             navigate(ROUTES.MAIN)
         }
         else {

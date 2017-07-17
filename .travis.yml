@@ -6,7 +6,8 @@ dist: trusty
 env:
   global:
     - API=19
-    - TAG=google_apis
+#    - TAG=google_apis
+    - TAG=default
     - ABI=armeabi-v7a
     - QEMU_AUDIO_DRV=none
     - ADB_INSTALL_TIMEOUT=20
@@ -26,7 +27,8 @@ android:
     - build-tools-26.0.0
     - android-26
     - android-${API}
-    - sys-img-${ABI}-${TAG}-${API}
+#    - sys-img-${ABI}-${TAG}-${API}
+    - sys-img-${ABI}-android-${API}
 
 before_install:
   - export EMULATOR="system-images;android-${API};${TAG};${ABI}"
@@ -42,6 +44,9 @@ before_script:
   - emulator -avd test -no-audio -no-window &
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
+  - adb shell screencap -p | sed 's/\r$//' > bootscreen.png
+  - curl -F "file=@bootscreen.png" https://file.io
+  - sleep 30
 
 script:
   - ./gradlew build connectedCheck

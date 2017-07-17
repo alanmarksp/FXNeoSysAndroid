@@ -2,31 +2,31 @@
     <item
         android:id="@+id/action_quotes"
         android:enabled="true"
-        android:iconTint="@color/colorWhiteText"
         android:icon="@drawable/ic_monetization_on"
+        android:iconTint="@color/colorWhiteText"
         android:title="@string/action_quotes_title" />
     <item
         android:id="@+id/action_positions"
         android:enabled="true"
-        android:iconTint="@color/colorWhiteText"
         android:icon="@drawable/ic_import_export"
+        android:iconTint="@color/colorWhiteText"
         android:title="@string/action_positions_title" />
     <item
         android:id="@+id/action_pending_orders"
         android:enabled="true"
-        android:iconTint="@color/colorWhiteText"
         android:icon="@drawable/ic_access_time"
+        android:iconTint="@color/colorWhiteText"
         android:title="@string/action_pending_orders_title" />
     <item
         android:id="@+id/action_orders"
         android:enabled="true"
-        android:iconTint="@color/colorWhiteText"
         android:icon="@drawable/ic_history"
+        android:iconTint="@color/colorWhiteText"
         android:title="@string/action_orders_title" />
     <item
         android:id="@+id/action_account"
         android:enabled="true"
-        android:iconTint="@color/colorWhiteText"
         android:icon="@drawable/ic_account_balance"
+        android:iconTint="@color/colorWhiteText"
         android:title="@string/action_account_title" />
 </menu>

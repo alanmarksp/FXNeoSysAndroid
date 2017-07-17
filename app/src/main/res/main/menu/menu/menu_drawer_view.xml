@@ -3,8 +3,7 @@
 
     <group
         android:id="@+id/trading_accounts_group"
-        android:checkableBehavior="single">
-    </group>
+        android:checkableBehavior="single" />
 
     <group
         android:id="@+id/menu_group"

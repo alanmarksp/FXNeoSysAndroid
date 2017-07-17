@@ -46,11 +46,11 @@ class DashboardFragment : Fragment(), Router {
     }
 
     private fun initFragment() {
-        val appCompatActivitity = activity as AppCompatActivity
+        val appCompatActivity = activity as AppCompatActivity
         setHasOptionsMenu(true)
         toolbar = fragmentDashboard?.findViewById(R.id.toolbar)
-        appCompatActivitity.setSupportActionBar(toolbar)
-        appCompatActivitity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        appCompatActivity.setSupportActionBar(toolbar)
+        appCompatActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         initNavigationDrawer()
         val contentFragment: Fragment = ContentFragment.newInstance(this)
         activity.supportFragmentManager

@@ -22,8 +22,10 @@ class MainActivity : AppCompatActivity(), Router {
     private fun initActivity() {
         val dashboardFragment: Fragment = DashboardFragment.newInstance(this)
         val profileFragment: ProfileFragment = ProfileFragment.newInstance(this)
+        val editProfileFragment: EditProfileFragment = EditProfileFragment.newInstance(this)
         routes[ROUTES.DASHBOARD] = dashboardFragment
         routes[ROUTES.PROFILE] = profileFragment
+        routes[ROUTES.EDIT_PROFILE] = editProfileFragment
         supportFragmentManager
                 .beginTransaction()
                 .add(R.id.main_fragment_container, dashboardFragment)

@@ -22,7 +22,8 @@ class Constants {
             val PENDING_ORDERS = "pending_orders"
             val ORDERS = "orders"
             val TRADING_ACCOUNT = "trading_account"
-            val PROFILE = "account"
+            val PROFILE = "profile"
+            val EDIT_PROFILE = "edit_profile"
         }
     }
 }
